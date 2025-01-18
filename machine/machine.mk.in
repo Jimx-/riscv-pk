@@ -16,6 +16,7 @@ machine_hdrs = \
   uart.h \
   uart16550.h \
   uart_litex.h \
+  uart_roomsoc.h \
   finisher.h \
   unprivileged_memory.h \
   vm.h \
@@ -32,6 +33,7 @@ machine_c_srcs = \
   uart.c \
   uart16550.c \
   uart_litex.c \
+  uart_roomsoc.c \
   finisher.c \
   misaligned_ldst.c \
   misaligned_vec_ldst.c \

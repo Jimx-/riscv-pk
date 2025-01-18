@@ -8,6 +8,7 @@
 #include "uart.h"
 #include "uart16550.h"
 #include "uart_litex.h"
+#include "uart_roomsoc.h"
 #include "finisher.h"
 #include "disabled_hart_mask.h"
 #include "htif.h"
@@ -168,7 +169,7 @@ static void hart_plic_init()
     return;
 
   size_t ie_words = (plic_ndevs + 8 * sizeof(*HLS()->plic_s_ie) - 1) /
-		(8 * sizeof(*HLS()->plic_s_ie));
+      (8 * sizeof(*HLS()->plic_s_ie));
   for (size_t i = 0; i < ie_words; i++) {
      if (HLS()->plic_s_ie) {
         // Supervisor not always present
@@ -195,6 +196,7 @@ void init_first_hart(uintptr_t hartid, uintptr_t dtb)
   query_uart(dtb);
   query_uart16550(dtb);
   query_uart_litex(dtb);
+  query_uart_roomsoc(dtb);
   query_htif(dtb);
 
   hart_init();
@@ -246,7 +248,7 @@ void enter_supervisor_mode(void (*fn)(uintptr_t), uintptr_t arg0, uintptr_t arg1
   mstatus = INSERT_FIELD(mstatus, MSTATUS_MPIE, 0);
   write_csr(mstatus, mstatus);
   write_csr(mscratch, MACHINE_STACK_TOP() - MENTRY_FRAME_SIZE);
-  write_csr(menvcfg, MENVCFG_SSE | MENVCFG_CBCFE | INSERT_FIELD(0, MENVCFG_CBIE, 1));
+  /* write_csr(menvcfg, MENVCFG_SSE | MENVCFG_CBCFE | INSERT_FIELD(0, MENVCFG_CBIE, 1)); */
 #ifndef __riscv_flen
   uintptr_t *p_fcsr = (uintptr_t*)(MACHINE_STACK_TOP() - MENTRY_FRAME_SIZE); // the x0's save slot
   *p_fcsr = 0;
